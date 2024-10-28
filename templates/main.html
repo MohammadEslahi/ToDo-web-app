@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Main</title>
+    <title>To-Do list</title>
   </head>
   <body>
     <form method="post">{% csrf_token %}
@@ -16,9 +16,13 @@
     <hr>
     {% for Item in ToDoItem %}
       {% if not Item.checked %}
-        <ul><li>{{Item}} <a href="{% url 'update' Item.pk %}">edit</a></li></ul>
-      {% else %}
-      <ul><li><strike>{{Item}}</strike> <a href=" {% url 'delete' Item.pk %}">delete</a></li></ul>  
+        <ul><li><a href="{% url 'checker' Item.id %}">{{Item}}</a> <a href="{% url 'update' Item.id %}">edit</a></li></ul>
+      {% endif %}
+    {% endfor %}
+    
+    {% for Item in ToDoItem %}
+      {% if Item.checked %}
+        <ul><li><a href="{% url 'unchecker' Item.id %}"><strike>{{Item}}</strike></a> <a href=" {% url 'delete' Item.pk %}">delete</a></li></ul>  
       {% endif %}
     {% endfor %}
   </body>

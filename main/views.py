@@ -35,3 +35,19 @@ def updateView(request, id):
         return render(request, 'update.html', {'ToDoListForm':ToDoListForm(instance=obj)})
     
     return render(request, 'update.html', {})
+
+
+
+def checkerView(request, id):
+    # if request.method == 'POST':
+    obj = ToDoItem.objects.get(id=id)
+    obj.checked = True
+    obj.save()
+    return HttpResponseRedirect('/')
+
+
+def uncheckerView(request, id):
+    obj = ToDoItem.objects.get(id=id)
+    obj.checked = False
+    obj.save()
+    return HttpResponseRedirect('/')
