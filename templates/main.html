@@ -4,6 +4,11 @@
     <title>To-Do list</title>
   </head>
   <body>
+    {% if request.user.id %}
+      <a href="{% url 'register' %}">register</a>
+      <a href="{% url 'edituser' request.user.id %}">edit credentials!</a>
+    {% endif %}
+
     <form method="post">{% csrf_token %}
         {{ToDoListForm.as_p}}
         <input type="submit" value="Add">
