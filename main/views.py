@@ -9,7 +9,7 @@ def homeView(request):
         form = ToDoListForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            ToDoItem.objects.create(text=cd['text'])
+            ToDoItem.objects.create(text=cd['text'], author=request.user)
             return HttpResponseRedirect("/")
     else:
         return render(request, 'main.html', {'ToDoItem':ToDoItem.objects.all(), 'ToDoListForm':ToDoListForm()})

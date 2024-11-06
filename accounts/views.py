@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
@@ -15,6 +16,7 @@ def CustomUserChangeView(request, id):
         form = CustomUserChangeForm(request.POST, instance=obj)
         if form.is_valid():
             form.save()
+            return HttpResponseRedirect("/")
     else:
         return render(request, 'edituser.html',{'form':CustomUserChangeForm(instance=obj)})
     return render(request, 'edituser.html',{'form':CustomUserChangeForm(instance=obj),'CustomUser':CustomUser.objects.all()})
