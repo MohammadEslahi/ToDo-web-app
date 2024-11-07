@@ -19,17 +19,17 @@
       or
       <a href="{% url 'edituser' request.user.id %}">edit credentials!</a>
     {% endif %}
-
-    <form method="post">{% csrf_token %}
-        {{ToDoListForm.as_p}}
-        <input type="submit" value="Add">
-    </form>
+    
+    {% if request.user.is_authenticated %}
+      <form method="post">{% csrf_token %}
+          {{ToDoListForm.as_p}}
+          <input type="submit" value="Add Item">
+      </form>
     <br>
-
-
-
     Your <b><i>"ToDo"</i></b>s are here...
     <hr>
+    {% endif %}
+
     {% for Item in ToDoItem %}
       {% if not Item.checked %}
         <ul><li><a href="{% url 'checker' Item.id %}">{{Item}}</a> <a href="{% url 'update' Item.id %}">edit</a></li></ul>
