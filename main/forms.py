@@ -5,4 +5,4 @@ from .models import *
 class ToDoListForm(forms.ModelForm):
     class Meta:
         model = ToDoItem
-        fields = ['text']
+        fields = ['text', 'image']

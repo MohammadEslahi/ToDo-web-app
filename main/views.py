@@ -10,11 +10,11 @@ from django.contrib.auth.decorators import login_required
 
 def homeView(request):
     if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = ToDoListForm(request.POST)
+        if request.method == 'POST' and request.FILES.get('image'):
+            form = ToDoListForm(request.POST, request.FILES)
             if form.is_valid():
                 cd = form.cleaned_data
-                ToDoItem.objects.create(text=cd['text'], author=request.user)
+                ToDoItem.objects.create(text=cd['text'], image=cd['image'], author=request.user)
                 return HttpResponseRedirect("/")
         else:
             return render(request, 'main.html', {'ToDoItem':ToDoItem.objects.filter(author=request.user), 'ToDoListForm':ToDoListForm()})
@@ -37,14 +37,14 @@ def updateView(request, id):
     if request.user==ToDoItem.objects.get(id=id).author:
         obj = ToDoItem.objects.get(id=id)
         if request.method == 'POST':
-            form = ToDoListForm(request.POST, instance = obj)
+            form = ToDoListForm(request.POST, request.FILES, instance = obj)
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect("/")
         else:
-            return render(request, 'update.html', {'ToDoListForm':ToDoListForm(instance=obj)})
+            return render(request, 'update.html', {'ToDoListForm':ToDoListForm(instance=obj), 'obj':obj})
         
-        return render(request, 'update.html', {})
+        return render(request, 'update.html', {'obj':obj})
     else:
         return HttpResponse("You are not elligible to edit this item")
 

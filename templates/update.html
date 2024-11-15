@@ -1,4 +1,6 @@
-<form method="post"> {% csrf_token %}
+{% load static %}
+<img src={{obj.image.url}} style="max-height: 100px">
+<form method="post" enctype="multipart/form-data"> {% csrf_token %}
     {{ToDoListForm.as_p}}
     <input type="submit" value="Update!">
 </form>
