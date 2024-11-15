@@ -8,7 +8,7 @@ class ToDoItem(models.Model):
     text = models.CharField(max_length=20)
     checked = models.BooleanField(default=False)
     author = models.ForeignKey (CustomUser, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='static/main/todoimages/', blank=True, null=True)
+    image = models.ImageField(upload_to='todoimages/', blank=True, null=True)
 
     def __str__(self):
         return self.text
