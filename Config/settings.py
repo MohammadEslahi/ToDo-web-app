@@ -17,8 +17,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 #  "upload_to" in model is a sub-directory of "MEDIA_ROOT"
-MEDIA_ROOT = '/media/'
 MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Quick-start development settings - unsuitable for production
