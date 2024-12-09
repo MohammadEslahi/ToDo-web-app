@@ -5,4 +5,4 @@ class ToDoItemAdmin(admin.ModelAdmin):
     list_display = ('text', 'checked', 'author')
 
 
-admin.site.register(ToDoItem, ToDoItemAdmin)
+admin.site.register(Task, ToDoItemAdmin)
