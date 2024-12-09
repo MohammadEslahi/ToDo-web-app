@@ -7,8 +7,6 @@ from .forms import *
 # It's how to change users' saved infos (fieldsets) or add new user (add_fieldsets)
 class CustomUserAdmin(UserAdmin):
     list_display = ['username', 'is_staff']
-    # form = CustomUserChangeForm
-    # add_form = CustomUserCreationForm
     fieldsets = UserAdmin.fieldsets + (('my fields',{'fields':('age',)}),)
     add_fieldsets = UserAdmin.add_fieldsets + (('my fields', {'fields':('age',)}),)
     

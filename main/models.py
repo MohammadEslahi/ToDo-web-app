@@ -4,7 +4,7 @@ from accounts.models import *
 
 
 
-class ToDoItem(models.Model):
+class Task(models.Model):
     text = models.CharField(max_length=20)
     checked = models.BooleanField(default=False)
     author = models.ForeignKey (CustomUser, on_delete=models.CASCADE)
