@@ -1,8 +1,8 @@
 from django.contrib import admin
 from .models import *
 
-class ToDoItemAdmin(admin.ModelAdmin):
+class TaskAdmin(admin.ModelAdmin):
     list_display = ('text', 'checked', 'author')
 
 
-admin.site.register(Task, ToDoItemAdmin)
+admin.site.register(Task, TaskAdmin)

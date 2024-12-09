@@ -2,7 +2,7 @@ from django import forms
 from .models import *
 
 
-class ToDoListForm(forms.ModelForm):
+class TaskForm(forms.ModelForm):
     class Meta:
-        model = ToDoItem
-        fields = ['text', 'image']
+        model = Task
+        fields = ['text', 'image', 'priority']
