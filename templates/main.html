@@ -20,27 +20,30 @@
       <a href="{% url 'edituser' request.user.id %}">edit credentials!</a>
     {% endif %}
     <hr>
+
+    <!-- Form for adding Task -->
     {% if request.user.is_authenticated %}
       <form method="post" enctype="multipart/form-data">{% csrf_token %}
         Add your To-do... <br>
-        {{ToDoListForm.as_p}}
+        {{TaskForm.as_p}}
           <input type="submit" value="Add">
       </form>
     <hr>
-    Your <b><i>"ToDo"</i></b>s are here...
+    Your <b><i>Tasks</i></b> are here...
     
     {% endif %}
 
-    {% for Item in ToDoItem %}
-      {% if not Item.checked %}
+    {% for Item in Task %}
+      <!-- {% if not Item.checked %} -->
         <ul><li><a href="{% url 'checker' Item.id %}">{{Item}}</a> <a href="{% url 'update' Item.id %}">edit</a></li></ul>
-      {% endif %}
+        <ul><li><a href="{% url 'unchecker' Item.id %}"><strike>{{Item}}</strike></a> <a href=" {% url 'delete' Item.pk %}">delete</a></li></ul>  
+      <!-- {% endif %} -->
     {% endfor %}
     
-    {% for Item in ToDoItem %}
+    <!-- {% for Item in ToDoItem %}
       {% if Item.checked %}
         <ul><li><a href="{% url 'unchecker' Item.id %}"><strike>{{Item}}</strike></a> <a href=" {% url 'delete' Item.pk %}">delete</a></li></ul>  
       {% endif %}
-    {% endfor %}
+    {% endfor %} -->
   </body>
 </html>

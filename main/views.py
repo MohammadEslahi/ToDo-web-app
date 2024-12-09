@@ -10,56 +10,56 @@ from django.contrib.auth.decorators import login_required
 
 def homeView(request):
     if request.user.is_authenticated:
-        if request.method == 'POST' and request.FILES.get('image'):
-            form = ToDoListForm(request.POST, request.FILES)
+        form = TaskForm(request.POST, request.FILES)
+        if request.method == 'POST':
             if form.is_valid():
-                cd = form.cleaned_data
-                ToDoItem.objects.create(text=cd['text'], image=cd['image'], author=request.user)
+                new_instance = form.save(commit=False)
+                new_instance.author = request.user
+                new_instance.save()
                 return HttpResponseRedirect("/")
         else:
-            return render(request, 'main.html', {'ToDoItem':ToDoItem.objects.filter(author=request.user), 'ToDoListForm':ToDoListForm()})
+            return render(request, 'main.html', {'Task':Task.objects.filter(author=request.user), 'TaskForm':TaskForm})
     else:
         return render(request, 'main.html', {})
 
 
 def deleteView(request, id):
-    if request.user==ToDoItem.objects.get(id=id).author:
-        obj = get_object_or_404(ToDoItem, id = id)
+    if request.user==Task.objects.get(id=id).author:
+        obj = get_object_or_404(Task, id = id)
         if request.method == 'POST':
             obj.delete()
             return HttpResponseRedirect("/")
         
-        return render(request, 'delete.html',{'ToDoItem':ToDoItem.objects.get(id=id)})
+        return render(request, 'delete.html',{'Task':Task.objects.get(id=id)})
     else:
         return HttpResponse("You are not elligible to delete this item")
 
 def updateView(request, id):
-    if request.user==ToDoItem.objects.get(id=id).author:
-        obj = ToDoItem.objects.get(id=id)
+    if request.user==Task.objects.get(id=id).author:
+        obj = Task.objects.get(id=id)
         if request.method == 'POST':
-            form = ToDoListForm(request.POST, request.FILES, instance = obj)
+            form = TaskForm(request.POST, request.FILES, instance = obj)
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect("/")
         else:
-            return render(request, 'update.html', {'ToDoListForm':ToDoListForm(instance=obj), 'obj':obj})
+            return render(request, 'update.html', {'TaskForm':TaskForm(instance=obj), 'obj':obj})
         
         return render(request, 'update.html', {'obj':obj})
     else:
         return HttpResponse("You are not elligible to edit this item")
 
 
-
+# for checking tasks
 def checkerView(request, id):
-    # if request.method == 'POST':
-    obj = ToDoItem.objects.get(id=id)
+    obj = Task.objects.get(id=id)
     obj.checked = True
     obj.save()
     return HttpResponseRedirect('/')
 
 
 def uncheckerView(request, id):
-    obj = ToDoItem.objects.get(id=id)
+    obj = Task.objects.get(id=id)
     obj.checked = False
     obj.save()
     return HttpResponseRedirect('/')
