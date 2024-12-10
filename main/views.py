@@ -4,6 +4,7 @@ from .models import *
 from .forms import *
 from django.views.generic import *
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 
@@ -17,11 +18,12 @@ def TasksView(request):
                 new_instance = form.save(commit=False)
                 new_instance.author = request.user
                 new_instance.save()
-                return HttpResponseRedirect("/")
+                messages.success(request, 'New task successfully added!')
+                return redirect('home')
             else:
-                return render(request, 'main.html', {'Task':obj, 'TaskForm':form})
+                return render(request, 'main.html', {'obj':obj, 'TaskForm':form})
         else:
-            return render(request, 'main.html', {'Task':obj, 'TaskForm':TaskForm})
+            return render(request, 'main.html', {'obj':obj, 'TaskForm':TaskForm})
 
 
 def deleteView(request, id):
@@ -29,8 +31,8 @@ def deleteView(request, id):
     if request.user== obj.author:
         if request.method == 'POST':
             obj.delete()
-            return HttpResponseRedirect("/")
-        
+            messages.success(request, 'Task successfully deleted!')
+            return redirect('home')
         return render(request, 'delete.html',{'Task':obj})
     else:
         return HttpResponse("You are not elligible to delete this item")
@@ -43,7 +45,8 @@ def updateView(request, id):
             form = TaskForm(request.POST, request.FILES, instance=obj)
             if form.is_valid():
                 form.save()
-                return HttpResponseRedirect("/")
+                messages.success(request, 'Task successfully edited!')
+                return redirect('home')
             else:
                 return render(request, 'update.html', {'TaskForm':form(instance=obj), 'obj':obj})
 
