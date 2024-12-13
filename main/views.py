@@ -11,19 +11,21 @@ from django.contrib import messages
 
 def TasksView(request):
     if request.user.is_authenticated:
-        obj = Task.objects.filter(author=request.user).order_by('-priority', '-date_created') # two-factor-sorting
-        form = TaskForm(request.POST, request.FILES)
+        tasks = Task.objects.filter(author=request.user).order_by('-priority', '-date_created') # two-factor-sorting
+        categories = Category.objects.filter(author=request.user)
+        task_form = TaskForm(request.POST, request.FILES)
+        task_form.fields['category'].queryset = categories
         if request.method == 'POST':
-            if form.is_valid():
-                new_instance = form.save(commit=False)
-                new_instance.author = request.user
-                new_instance.save()
+            if task_form.is_valid():
+                new_task = task_form.save(commit=False)
+                new_task.author = request.user
+                new_task.save()
                 messages.success(request, 'New task successfully added!')
                 return redirect('home')
-            else:
-                return render(request, 'main.html', {'obj':obj, 'TaskForm':form})
-        else:
-            return render(request, 'main.html', {'obj':obj, 'TaskForm':TaskForm})
+        
+        return render(request, 'main.html', {'tasks':tasks, 'task_form':task_form})
+    else:
+        return render(request, 'main.html', {})
 
 
 def deleteView(request, id):
@@ -69,3 +71,23 @@ def uncheckerView(request, id):
     obj.checked = False
     obj.save()
     return HttpResponseRedirect('/')
+
+
+
+def manageCategories(request, id):
+    new_category = request.POST.get('name')
+    categories = Category.objects.filter(author=request.user)
+    add_category_form = AddCategoryForm(request.POST)
+    if request.method == 'POST':
+        if categories.filter(name=new_category).exists():
+            messages.error(request, 'Category already exists')
+        else:
+            if add_category_form.is_valid():
+                my_category= add_category_form.save(commit=False)
+                my_category.author = request.user
+                my_category.save()
+
+
+            else:
+                add_category_form = AddCategoryForm()
+    return render(request, 'categories.html', {'categories':categories, 'add_category_form':add_category_form})
