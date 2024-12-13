@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<!-- Showing messages -->
+{% if messages %}
+  {% for message in messages %}
+    {{message}}
+  {% endfor %}
+{% endif %}
+
+
+<!-- Form for adding new category -->
+    <form method="post">{% csrf_token %}
+        Add a new category<br>
+        {{add_category_form}}
+          <input type="submit" value="Add">
+      </form>
+    Your current categories:
+    {% for category in categories%}
+      {{category}}
+  {% endfor %}
+</body>
+</html>

@@ -1,10 +1,11 @@
+{% load static %}
 <!doctype html>
 <html>
   <head>
     <title>To-Do list</title>
   </head>
   <body>
-    <!-- Showing success messages -->
+    <!-- Showing messages -->
     {% if messages %}
       {% for message in messages %}
         {{message}}
@@ -28,27 +29,50 @@
     {% endif %}
     <hr>
 
-    <!-- Form for adding Task -->
-    {% if request.user.is_authenticated %}
-      <form method="post" enctype="multipart/form-data">{% csrf_token %}
-        Add your Task here <br>
-        {{TaskForm.as_p}}
-          <input type="submit" value="Add">
-      </form>
-    <hr>
-    Your <b><i>Tasks</i></b> are here...
     
+    {% if request.user.is_authenticated %}
+      <a href="{% url 'categories' request.user.id %}">Add new category</a>  
+  
+    <!-- Form for adding Task -->
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+      Add your new Task<br>
+      {{task_form.as_p}}
+        <input type="submit" name="add_task" value="Add">
+    </form>
+
+    <!-- Showing all tasks -->
+      {% if tasks %}
+        Your <b><i>Tasks</i></b> are here...
+      {% else %}
+        No tasks yet...
+      {% endif %}
     {% endif %}
 
-    {% for Item in obj %}
-      {% if not Item.checked %}
-        <ul><li><a href=" {% url 'delete' Item.pk %}">delete</a> <a href="{% url 'update' Item.id %}">edit</a> <a href="{% url 'checker' Item.id %}">{{Item}}</a></li></ul>
+    <!-- showing unchecked tasks -->
+    {% for task in tasks %}
+      {% if not task.checked %}
+        <ul>
+          <form method="post" action="{% url 'checker' task.id %}" style="display: inline;">{%csrf_token%}
+            <input type="checkbox" name="checked" onchange="this.form.submit()" style="cursor: pointer;">
+          </form>
+          <a href=" {% url 'delete' task.pk %}"><img src="{% static 'images/delete_icon.png' %}" width="15" height="15"></a>
+          <a href=" {% url 'update' task.pk %}"><img src="{% static 'images/edit_icon.png' %}" width="15" height="15"></a>
+          {{task}}
+        </ul>
       {% endif %}
     {% endfor %}
     
-    {% for Item in obj %}
-      {% if Item.checked %}
-        <ul><li><a href=" {% url 'delete' Item.pk %}">delete</a> <a href="{% url 'update' Item.id %}">edit</a> <a href="{% url 'unchecker' Item.id %}"><strike>{{Item}}</strike></a></li></ul>  
+
+        <!-- showing checked tasks -->
+    {% for task in tasks %}
+      {% if task.checked %}
+        <ul>
+          <form method="post" action="{% url 'unchecker' task.id %}" style="display: inline;">{%csrf_token%}
+            <input type="checkbox" checked name="checked" onchange="this.form.submit()" style="cursor: pointer;">
+          </form>
+          <a href=" {% url 'delete' task.pk %}"><img src="{% static 'images/delete_icon.png' %}" width="15" height="15"></a>
+          <a href=" {% url 'update' task.pk %}"><img src="{% static 'images/edit_icon.png' %}" width="15" height="15"></a>
+          <strike>{{task}}</strike></ul>  
       {% endif %}
     {% endfor %}
   </body>
