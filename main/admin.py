@@ -2,9 +2,9 @@ from django.contrib import admin
 from .models import *
 
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('text', 'priority', 'checked', 'date_created')
+    list_display = ('name', 'priority', 'checked', 'date_created')
     readonly_fields = ('date_created',)  # makes 'date_created' read-only (otherwise an error raises)
-    fields = ('text', 'category', 'priority', 'checked', 'date_created')
+    fields = ('name', 'category', 'priority', 'checked', 'date_created')
 
 
 class CategoryAdmin(admin.ModelAdmin):

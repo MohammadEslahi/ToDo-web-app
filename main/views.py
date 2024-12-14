@@ -11,10 +11,19 @@ from django.contrib import messages
 
 def TasksView(request):
     if request.user.is_authenticated:
-        tasks = Task.objects.filter(author=request.user).order_by('-priority', '-date_created') # two-factor-sorting
+        tasks = Task.objects.filter(author=request.user).order_by('-priority', '-date_created') # two-factor-sorting 
+
+        # handling new task form
         categories = Category.objects.filter(author=request.user)
         task_form = TaskForm(request.POST, request.FILES)
         task_form.fields['category'].queryset = categories
+
+        # Handle filtering by category
+        category_filter = request.GET.get('category_filter')
+        if category_filter:
+            tasks = tasks.filter(category__name=category_filter)
+
+
         if request.method == 'POST':
             if task_form.is_valid():
                 new_task = task_form.save(commit=False)
@@ -23,7 +32,7 @@ def TasksView(request):
                 messages.success(request, 'New task successfully added!')
                 return redirect('home')
         
-        return render(request, 'main.html', {'tasks':tasks, 'task_form':task_form})
+        return render(request, 'main.html', {'tasks':tasks, 'task_form':task_form, 'categories':categories})
     else:
         return render(request, 'main.html', {})
 
@@ -41,7 +50,9 @@ def deleteView(request, id):
 
 def updateView(request, id):
     obj = get_object_or_404(Task, id=id)
+    categories = Category.objects.filter(author=request.user)
     form = TaskForm(request.POST, request.FILES)
+    form.fields['category'].queryset = categories
     if request.user==obj.author:
         if request.method == 'POST':
             form = TaskForm(request.POST, request.FILES, instance=obj)
@@ -53,7 +64,9 @@ def updateView(request, id):
                 return render(request, 'update.html', {'TaskForm':form(instance=obj), 'obj':obj})
 
         else:
-            return render(request, 'update.html', {'TaskForm':TaskForm(instance=obj), 'obj':obj})
+            form = TaskForm(instance=obj)
+            form.fields['category'].queryset = categories
+            return render(request, 'update.html', {'TaskForm':form, 'obj':obj})
     else:
         return HttpResponse("You are not elligible to edit this item")
 
