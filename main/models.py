@@ -21,7 +21,7 @@ class Task(models.Model):
         ('2-medium', 'medium'),
         ('3-high','high')
     ]
-    text = models.CharField(max_length=20)
+    name = models.CharField(max_length=20)
     checked = models.BooleanField(default=False)
     image = models.ImageField(upload_to='taskimages/', blank=True, null=True)
     priority = models.CharField(max_length=8, choices=PRIORITY_CHOICES, default='low')
@@ -31,4 +31,4 @@ class Task(models.Model):
     
 
     def __str__(self):
-        return self.text
+        return self.name

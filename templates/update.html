@@ -2,6 +2,8 @@
 {% if obj.image %}
     <img src={{obj.image.url}} style="max-height: 100px">
 {% endif %}
+
+
 <form method="post" enctype="multipart/form-data"> {% csrf_token %}
     {{TaskForm.as_p}}
     <input type="submit" value="Update!">
