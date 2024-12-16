@@ -1,6 +1,25 @@
-<form method="post"> {%csrf_token %}
-    Delete "{{Task}}"?
-    <br>
-    <input type="submit" value="Delete!">
-</form>
-<a href="{% url 'home' %}"><button type="button">Cancel</button></a>
+{% extends 'base.html' %}
+
+{% block body %}
+
+<!-- Deleting tasks -->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-center">Delete Task</h5>
+          <form method="post">
+            {% csrf_token %}
+            <p class="text-center">Are you sure you want to delete the task "{{ Task }}"?</p>
+            <div class="d-flex justify-content-center gap-2">
+              <input type="submit" value="Delete!" class="btn btn-danger">
+              <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

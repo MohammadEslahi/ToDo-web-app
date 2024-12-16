@@ -1,4 +1,36 @@
-<form method="post">{% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value="Register!">
-</form>
+{% extends 'base.html' %}
+
+{% block body %}
+
+
+    <!-- registration form -->
+<div class="container">
+    <h2>Sign up</h2>
+    <form method="post" enctype="multipart/form-data"> {% csrf_token %}
+        {{form.username.label_tag}}<div class="col-sm-10">{{form.username}}</div>
+        {{form.age.label_tag}}<small class="form-text text-muted">(optional)</small><div class="col-sm-10">{{form.age}}</div>
+        {{form.password1.label_tag}}<div class="col-sm-10">{{form.password1}}</div>
+        {{form.password2.label_tag}}<div class="col-sm-10">{{form.password2}}</div>
+        <label for="{{form.profile_image.id_for_label}}">Profile image <small class="form-text text-muted">(optional)</small>:</label>
+        <input type="file" name="{{form.profile_image.name}}" class="form-control form-control-file w-auto" />
+        <br>
+
+
+
+        <!-- showing errors -->
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <ul class="error-list">
+                {% for errors in form.errors.values %}
+                    {% for error in errors %}
+                        <p><li>{{error}}</li></p>
+                    {% endfor %}
+                {% endfor %}
+                </ul>
+            </div>   
+        {% endif %}
+        <div class="col-sm-10"><button class="btn btn-primary" type="submit">Register!</button>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a></div>
+    </form>
+</div>
+{% endblock %}
