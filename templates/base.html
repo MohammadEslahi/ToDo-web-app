@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+<!-- bootstrap CSS link to be placed in the <head> -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+    <!--  Background image -->
+    <style>
+        body {
+            background-image: url('https://images.pexels.com/photos/2736499/pexels-photo-2736499.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            color: black;
+        }
+    </style>
+    
+
+    <!-- navbar -->
+     <nav class="navbar navbar-light"  style="background-color:rgba(180,180,180,0.4);">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">Home page</a>
+            <div class="ms-auto d-flex align-items-center">
+                {% if request.user.id %}
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle d-flex align-items-center" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if request.user.profile_image.name == 'profile_image/default_profile_image.jpg' %}
+                                <img src="{{'/static/profile_image/default_profile_image.jpg'}}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                            {% else %}
+                                <img src="{{request.user.profile_image.url}}" class="rounded-circle" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                            {% endif %}
+                            <span class="ms-2"> {{ request.user.username }} </span> <!-- Display username -->
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown" style="margin: 2%; padding: 2%;">
+                            <li style="margin-bottom: 1%;"><a class="btn btn-outline-secondary w-100" href="{% url 'edituser' request.user.id %}">Edit Account</a></li>
+                            <li></li>
+                                <form method="post" class="d-inline" action="{% url 'logout' %}">{% csrf_token %}
+                                    <button type='submit' class="btn btn-outline-danger w-100" style="padding-left: 22%; padding-right: 22%;">Log out</Button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a class="nav-link d-inline" href="{% url 'login' %}">Sign in </a>
+                    <span class="mx-2">|</span> <!-- Space between links -->
+                    <a class="nav-link d-inline" href="{% url 'register' %}">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+     </nav>
+
+
+     
+    <!-- Displaying messages (success,...) -->
+    {% if messages %}
+    <div class="container">
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-success" style="text-align: center; max-width: 30%; margin: 0 auto;">
+                {{message}}
+            </div>
+        {% endfor%}
+    </div>
+    </div>
+ {% endif %}
+     {% block body %}{% endblock %}

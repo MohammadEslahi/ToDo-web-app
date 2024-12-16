@@ -1,99 +1,167 @@
+{% extends 'base.html' %}
 {% load static %}
-<!doctype html>
-<html>
-  <head>
-    <title>To-Do list</title>
-  </head>
-  <body>
-    <!-- Showing messages -->
-    {% if messages %}
-      {% for message in messages %}
-        {{message}}
-      {% endfor %}
-    {% endif %}
-
-    {% if not request.user.id %}
-      <h4>You are not signed in</h4>
-      <a href="{% url 'login' %}">Login</a>
-      or
-      <a href="{% url 'register' %}">register</a>
-    {% endif %}
-
-    {% if request.user.id %}
-    <h4>Hi, {{request.user}}</h4>
-      <form method="post" action="{% url 'logout' %}">{%csrf_token%}
-        <button type="submit">Logout</button>
-      </form>
-      or
-      <a href="{% url 'edituser' request.user.id %}">edit credentials!</a>
-    {% endif %}
-    <hr>
-
-    
-  {% if request.user.is_authenticated %}
-    
-
-    
-<!-- form for filtering tasks by category -->
-<form method="get" action="{% url 'home' %}">
-  <label for="category_filter">Filter by Category:</label>
-  <select name="category_filter" id="category_filter">
-    <option value="">All categories</option>
-    {% for category in categories %}
-      <option value="{{category.name}}" {% if category.name == request.GET.category_filter %} selected {% endif %}>{{category.name}}</option>
-    {% endfor %}
-  </select>
-  <button type="submit">Filter</button>
-</form>
-
-
-    <a href="{% url 'categories' request.user.id %}">Add new category</a>  
+{% block title %} home {% endblock %}
+{% block body %}
+<div class="container mt-5">
   
-    <!-- Form for adding Task -->
-    <form method="post" enctype="multipart/form-data">{% csrf_token %}
-      Add your new Task<br>
-      {{task_form.as_p}}
-        <input type="submit" name="add_task" value="Add">
-    </form>
 
 
-
-
-
-    <!-- Showing all tasks -->
-      {% if tasks %}
-        Your <b><i>Tasks</i></b> are here...
-      {% else %}
-        No tasks yet...
+    <!-- Invite new-comers to register or sign in -->
+  <div class="text-center mb-4">
+      <h4>Welcome to the To-Do App</h4>
+      {% if not request.user.is_authenticated %}
+          <p>Please <a href="{% url 'login' %}">log in</a> or <a href="{% url 'register' %}">register</a> to manage your tasks.</p>
       {% endif %}
-    {% endif %}
+  </div>
 
-    <!-- showing unchecked tasks -->
-    {% for task in tasks %}
-      {% if not task.checked %}
-        <ul>
-          <form method="post" action="{% url 'checker' task.id %}" style="display: inline;">{%csrf_token%}
-            <input type="checkbox" name="checked" onchange="this.form.submit()" style="cursor: pointer;">
+  <hr class="my-4">
+
+  {% if request.user.is_authenticated %}
+      <div class="row justify-content-center">
+
+
+
+        <!-- new Task Form -->
+        <div class="d-flex justify-content-center align-items-center">
+          <h2 class="text-center">Add new task</h2>
+        </div>
+        
+        <div class="container mt-5">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="d-flex flex-column align-items-center">
+              <!-- Task Name -->
+              <div class="mb-3 w-50">
+                <label for="id_name" class="form-label">Task Name*</label>
+                <input type="text" name="name" id="id_name" maxlength="20" class="form-control" placeholder="*(Required)">
+              </div>
+              <!-- Task Category -->
+              <div class="mb-3 w-50">
+                <label for="id_category" class="form-label">Category<span class="text-muted"> (optional)</span></label>
+                <!-- Add Category Button -->
+                <a href="{% url 'categories' request.user.id %}">+ Add or remove categories</a>
+              <!-- ----------- -->
+                <select name="category" id="id_category" class="form-select">
+                  <option value="" {% if not task_form.category.value %}selected{% endif %}>general </option>
+                  {% for category in categories %}
+                    <option value="{{ category.id }}" {% if task_form.category.value == category.id %}selected{% endif %}>
+                      {{ category.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+              
+
+
+
+
+              <!-- Task Priority -->
+              <div class="mb-3 w-50">
+                <label for="id_priority" class="form-label">Priority</label>
+                <select name="priority" id="id_priority" class="form-select">
+                  <option value="1-low" {% if task_form.priority.value == '1-low' %}selected{% endif %}>Low</option>
+                  <option value="2-medium" {% if task_form.priority.value == '2-medium' %}selected{% endif %}>Medium</option>
+                  <option value="3-high" {% if task_form.priority.value == '3-high' %}selected{% endif %}>High</option>
+                </select>
+              </div>
+          
+              <!-- Task Image -->
+              <div class="mb-3 w-50">
+                <label for="id_image" class="form-label">Task Image <span class="text-muted">(optional)</span></label>
+                <input type="file" name="image" id="id_image" class="form-control">
+              </div>
+              <!-- Submit Button -->
+              <div class="mb-3 w-50 text-center">
+                <button class="btn btn-primary" type="submit" name="add_task">Add Task</button>
+              </div>
+            </div>
           </form>
-          <a href=" {% url 'delete' task.pk %}"><img src="{% static 'images/delete_icon.png' %}" width="15" height="15"></a>
-          <a href=" {% url 'update' task.pk %}"><img src="{% static 'images/edit_icon.png' %}" width="15" height="15"></a>
-          {{task}}
-        </ul>
-      {% endif %}
-    {% endfor %}
+        </div>
+        
+
+
+
+          <!-- Filtering Tasks by Category -->
+          
+          <div class="col-md-6">
+            <h5>Filter Tasks</h5>
+            <form method="get" action="{% url 'home' %}" class="mb-4">
+                <div class="input-group">
+                    <select name="category_filter" class="form-select">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.name }}" {% if category.name == request.GET.category_filter %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-outline-primary" type="submit">Filter</button>
+                </div>
+            </form>
+         </div>
+    </div>
+
+    <div class="row justify-content-center">
+
+
+
+
     
 
-        <!-- showing checked tasks -->
-    {% for task in tasks %}
-      {% if task.checked %}
-        <ul>
-          <form method="post" action="{% url 'unchecker' task.id %}" style="display: inline;">{%csrf_token%}
-            <input type="checkbox" checked name="checked" onchange="this.form.submit()" style="cursor: pointer;">
-          </form>
-          <a href=" {% url 'delete' task.pk %}"><img src="{% static 'images/delete_icon.png' %}" width="15" height="15"></a>
-          <a href=" {% url 'update' task.pk %}"><img src="{% static 'images/edit_icon.png' %}" width="15" height="15"></a>
-          <strike>{{task}}</strike></ul>  
+      <!--Showing all Tasks in a List -->
+<div class="row">
+  <h6 class="text-center">New Tasks</h6>
+  {% for task in tasks %}
+      {% if not task.checked %}
+          <div class="col-12 d-flex justify-content-center"> <!-- Center the task and make it narrow -->
+              <div class="task-card" style="max-width: 400px; width: 100%;"> <!-- Narrow task card -->
+                  <ul class="list-group">
+                      <li class="list-group-item d-flex justify-content-between align-items-center" style="background-color:
+                      {% if task.priority == '3-high' %} rgb(250, 190, 190)
+                      {% elif task.priority == '2-medium' %} rgb(250, 250, 180)
+                      {% elif task.priority == '1-low' %} rgb(210, 250, 170)
+                      {% endif %};">
+                          <form method="post" action="{% url 'checker' task.id %}" class="me-3">
+                              {% csrf_token %}
+                              <input type="checkbox" onchange="this.form.submit()">
+                          </form>
+                          {{ task }}
+                          <div>
+                              <a href="{% url 'update' task.id %}" class="text-primary me-2">Edit</a>
+                              <a href="{% url 'delete' task.id %}" class="text-danger">Delete</a>
+                          </div>
+                      </li>
+                  </ul>
+              </div>
+          </div>
       {% endif %}
-    {% endfor %}
-  </body>
-</html>
+  {% endfor %}
+
+  <!-- Showing checked tasks -->
+  <h6 class="text-center">Completed Tasks</h6>
+  {% for task in tasks %}
+      {% if task.checked %}
+          <div class="col-12 d-flex justify-content-center"> <!-- Center the task and make it narrow -->
+              <div class="task-card" style="max-width: 400px; width: 100%;"> <!-- Narrow task card -->
+                  <ul class="list-group ">
+                      <li class="list-group-item d-flex justify-content-between align-items-center" style="background-color: rgb(170,170,170);"">
+                          <form method="post" action="{% url 'unchecker' task.id %}" class="me-3">
+                              {% csrf_token %}
+                              <input type="checkbox" checked onchange="this.form.submit()">
+                          </form>
+                          <strike>{{ task }}</strike>
+                          <div>
+                              <a href="{% url 'update' task.id %}" class="text-primary me-2">Edit</a>
+                              <a href="{% url 'delete' task.id %}" class="text-danger">Delete</a>
+                          </div>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+      {% endif %}
+  {% endfor %}
+</div>
+
+  {% endif %}
+</div><br><br><br><br><br><br><br>
+{% endblock %}

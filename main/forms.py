@@ -5,7 +5,7 @@ from .models import *
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['category', 'name', 'image', 'priority']
+        fields = [ 'name', 'category','priority', 'image']
 
 class AddCategoryForm(forms.ModelForm):
     class Meta:
