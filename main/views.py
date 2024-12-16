@@ -128,7 +128,7 @@ def manageCategories(request, id):
         elif new_category=='general':
             messages.error(request, '"general" category is added by default :)')
         elif new_category=='':
-            messages.error(request, 'please enter a NAME for the category.')
+            messages.error(request, 'Category cannot be empty')
         elif 'delete_category' in request.POST:
             delete_category = get_object_or_404(Category, id=id)
             if delete_category.author == request.user:
