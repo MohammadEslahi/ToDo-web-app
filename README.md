@@ -15,7 +15,7 @@ A simple, minimalistic To-Do application built with Django, allowing users to ma
 - **Python**: (Programming language)
 - **Django**: Python-based framework for backend development.
 - **Bootstrap**: For front-end styling.
-- **SQLite**: Default database.
+- **PostgreSQL**: For managing accounts, tasks, images and categories.
 - **HTML**: For templates structure and design.
 
 ## Setup
