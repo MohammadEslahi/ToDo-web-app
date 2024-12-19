@@ -1,4 +1,3 @@
-please add it to my readme:
 # To-Do App
 
 A simple, minimalistic To-Do application built with Django, allowing users to manage tasks with categories and priorities.
