@@ -28,7 +28,7 @@ A simple, minimalistic To-Do application built with Django, allowing users to ma
 2. Set up a virtual environment:
    python -m venv env
 
-3. Install dependencies:
+3. Install dependencies: 
    pip install -r requirements.txt
 
 4. Setup the database:
