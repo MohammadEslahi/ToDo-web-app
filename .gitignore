@@ -1,5 +1,6 @@
 db.sqlite3
-media/
+/media/
+/static/
 env/
 __pycache__/
 *.py[cod]
