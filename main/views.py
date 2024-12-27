@@ -52,16 +52,20 @@ def TasksView(request):
         return render(request, 'main.html', {})
 
 
+
 def deleteView(request, id):
-    obj = get_object_or_404(Task, id=id)
+    # optimizing database memory usage using .only
+    obj = get_object_or_404(Task.objects.only('name', 'author'), id=id)
     if request.user== obj.author:
         if request.method == 'POST':
             obj.delete()
             messages.success(request, 'Task successfully deleted!')
             return redirect('home')
-        return render(request, 'delete.html',{'Task':obj})
+        return render(request, 'delete.html',{'task':obj})
     else:
-        return HttpResponse("You are not elligible to delete this item")
+        messages.success(request, 'You are not elligible to delete this item')
+        return redirect('home')
+
 
 def updateView(request, id):
     obj = get_object_or_404(Task, id=id)
@@ -101,6 +105,7 @@ def updateView(request, id):
         return HttpResponse("You are not elligible to edit this item")
 
 
+
 # for checking tasks
 def checkerView(request, id):
     obj = get_object_or_404(Task, id=id)
@@ -109,11 +114,13 @@ def checkerView(request, id):
     return HttpResponseRedirect('/')
 
 
+
 def uncheckerView(request, id):
     obj = get_object_or_404(Task, id=id)
     obj.checked = False
     obj.save()
     return HttpResponseRedirect('/')
+
 
 
 
