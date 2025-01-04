@@ -5,7 +5,7 @@ from accounts.models import CustomUser
     
 
 class Category(models.Model):
-    name = models.CharField(max_length=10)
+    name = models.CharField(max_length=20)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='categories')
 
     class Meta:
@@ -21,12 +21,12 @@ class Task(models.Model):
         ('2-medium', 'medium'),
         ('3-high','high')
     ]
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     checked = models.BooleanField(default=False)
     image = models.ImageField(upload_to='taskimages/', blank=True, null=True)
     priority = models.CharField(max_length=8, choices=PRIORITY_CHOICES, default='low')
     date_created = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='tasks')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='tasks', blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
     
 
