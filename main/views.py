@@ -5,6 +5,59 @@ from .forms import *
 from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import TaskSerializer
+
+
+
+
+@api_view(['GET', 'POST'])
+def api_task_list_view(request):
+    tasks = Task.objects.filter(author=request.user)
+
+    if request.method == 'GET':
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    if request.method == "POST":
+        serializer = TaskSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(author = request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+def api_task_detail_view(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.user == task.author:
+        if request.method == 'GET':
+            serializer = TaskSerializer(task)
+            return Response(serializer.data)
+
+        if request.method == 'PUT':
+            serializer = TaskSerializer(task, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=400)
+
+
+
+@api_view(['DELETE'])
+def api_task_delete_view(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if task.author != request.user:
+        return Response({'detail':'You do not have permission to delete this task.'}, status=status.HTTP_403_FORBIDDEN)
+    task.delete()
+    return Response({'detail':'Task was successfully deleted.'}, status=status.HTTP_204_NO_CONTENT)
+            
+        
 
 
 

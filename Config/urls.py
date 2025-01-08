@@ -3,6 +3,7 @@ from django.urls import path, include
 # for recognizing & loading static files...
 from django.conf.urls.static import static
 from django.conf import settings
+from main.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -10,6 +11,10 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('profile/<int:id>', include('accounts.urls')),
+    # REST API-related view
+    path('api/tasks/',api_task_list_view ,name='api_task_list'),
+    path('api/tasks/<int:pk>/',api_task_detail_view ,name='api_task_detail'),
+    path('api/tasks/<int:pk>/delete/', api_task_delete_view, name='api_task_delete'),
 ]
 
 # for recognizing & loading static files...

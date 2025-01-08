@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import *
 
 
 urlpatterns = [
@@ -9,4 +10,6 @@ urlpatterns = [
     path('checker/<int:id>', views.checkerView, name='checker'),
     path('unchecker/<int:id>', views.uncheckerView, name='unchecker'),
     path('categories/<int:id>', views.manageCategories, name='categories'),
+    
+    
 ]
