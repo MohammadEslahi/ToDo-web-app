@@ -4,6 +4,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from main.views import *
+from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -15,6 +16,8 @@ urlpatterns = [
     path('api/tasks/',api_task_list_view ,name='api_task_list'),
     path('api/tasks/<int:pk>/',api_task_detail_view ,name='api_task_detail'),
     path('api/tasks/<int:pk>/delete/', api_task_delete_view, name='api_task_delete'),
+    # Generating REST API auth token
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]
 
 # for recognizing & loading static files...

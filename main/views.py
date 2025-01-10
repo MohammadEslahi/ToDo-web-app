@@ -6,7 +6,8 @@ from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .serializers import TaskSerializer
 
@@ -14,7 +15,9 @@ from .serializers import TaskSerializer
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def api_task_list_view(request):
+    print(request.user)
     tasks = Task.objects.filter(author=request.user)
 
     if request.method == 'GET':
