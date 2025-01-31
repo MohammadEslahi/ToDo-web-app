@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from .serializers import TaskSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -65,6 +65,7 @@ def API_user_register_view(request):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
+# @permission_classes([AllowAny])
 def api_task_list_view(request):
     print(request.user)
     tasks = Task.objects.filter(author=request.user)
@@ -83,7 +84,7 @@ def api_task_list_view(request):
 
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
 def api_task_detail_view(request, pk):
     task = get_object_or_404(Task, pk=pk)

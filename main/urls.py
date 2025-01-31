@@ -11,9 +11,12 @@ urlpatterns = [
     path('unchecker/<int:id>', views.uncheckerView, name='unchecker'),
     path('categories/<int:id>', views.manageCategories, name='categories'),
     # DRF and JWT urls...
-    path('api_task_list/', api_task_list_view, name='api_task_list'),
+    path('tasks/', api_task_list_view, name='api_task_list'),
     path('register/', API_user_register_view, name='API_user_register'),
     path('token/', TokenObtainPairView.as_view(), name='TokenObtainPair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='TokenRefresh'),
     path('login/', API_user_login, name='login'),
+    path('tasks/<int:pk>/', api_task_detail_view, name='api_task_detail'),
+    path('tasks/<int:pk>/delete/', api_task_delete_view, name='api_task_delete'),
+
 ]
