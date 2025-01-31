@@ -16,8 +16,8 @@ urlpatterns = [
     path('api/tasks/',api_task_list_view ,name='api_task_list'),
     path('api/tasks/<int:pk>/',api_task_detail_view ,name='api_task_detail'),
     path('api/tasks/<int:pk>/delete/', api_task_delete_view, name='api_task_delete'),
-    # Generating REST API auth token
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    # REST API and JWT
+    path('api/', include('main.urls')),
 ]
 
 # for recognizing & loading static files...
