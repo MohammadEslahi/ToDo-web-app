@@ -24,9 +24,18 @@ def API_user_login(request):
     password = request.data.get('password')
 
     user = authenticate(username=username, password=password)
-    return Response({'message':'Successfully logged in!'}, status=status.HTTP_200_OK)
 
-
+    if user is not None:
+        refresh = RefreshToken.for_user(user)
+        return Response(
+            {
+                'access':str(refresh.access_token),
+                'refresh':str(refresh)
+            },
+            status=status.HTTP_200_OK
+        )
+    else:
+        return Response({'error':'Invalid credentials!'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 
@@ -74,7 +83,8 @@ def api_task_list_view(request):
 
 
 
-
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def api_task_detail_view(request, pk):
     task = get_object_or_404(Task, pk=pk)
     if request.user == task.author:
@@ -88,11 +98,12 @@ def api_task_detail_view(request, pk):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        return Response(serializer.errors, status=400)
+        return Response({'error':'You do not have permission to modify this task.'}, status=status.HTTP_403_FORBIDDEN)
 
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def api_task_delete_view(request, pk):
     task = get_object_or_404(Task, pk=pk)
     if task.author != request.user:
