@@ -1,6 +1,6 @@
 # To-Do App
 
-A minimalistic To-Do application built with Django, allowing users to manage tasks with categories and priorities.
+A Django Task manager app that features category-based filters and priority-based ordering.
 
 ## Features
 
